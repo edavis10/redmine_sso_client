@@ -45,7 +45,7 @@ class AuthSourceSso < AuthSource
         raw_hash = Hash.from_xml(response)
         return raw_hash['user']
       else
-        return false
+        return nil
       end
 
     }
