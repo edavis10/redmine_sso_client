@@ -20,6 +20,7 @@ module FakeWebResponses
   <lastname>Doe</lastname>
   <login>user</login>
   <mail>test@example.com</mail>
+  <hash-password>5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</hash-password>
 </user>'
   end
 
@@ -31,6 +32,7 @@ module FakeWebResponses
   <lastname>user</lastname>
   <login>user</login>
   <mail>no-email-14@example.com</mail>
+  <hash-password>5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</hash-password>
 </user>'
   end
   

@@ -55,6 +55,7 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
           assert_equal "user", user['firstname']
           assert_equal "user", user['lastname']
           assert_equal "no-email-14@example.com", user['mail']
+          assert_equal "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8", user['hash_password']
         end
       end
     end
@@ -84,6 +85,7 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
           assert_equal "John", user['firstname']
           assert_equal "Doe", user['lastname']
           assert_equal "test@example.com", user['mail']
+          assert_equal "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8", user['hash_password']
         end
       end
 
