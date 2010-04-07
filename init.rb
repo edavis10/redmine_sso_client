@@ -1,6 +1,12 @@
 config.gem 'rest-client', :lib => 'rest_client'
 
 require 'redmine'
+require 'dispatcher'
+
+Dispatcher.to_prepare :redmine_sso_client do
+  require_dependency 'issue'
+  User.send(:include, RedmineSsoClient::Patches::UserPatch) unless User.included_modules.include?(RedmineSsoClient::Patches::UserPatch)
+end
 
 Redmine::Plugin.register :redmine_sso_client do
   name 'Redmine SSO Client'

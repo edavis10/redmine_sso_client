@@ -45,4 +45,27 @@ module SsoClient
       end
     }
   end
+
+  def update_account_on_sso_server(login, password, attributes)
+    # Extract out only the attributes the SSO Server uses
+    sso_attributes = {}
+    sso_attributes[:login] = attributes.delete(:login)
+    sso_attributes[:firstname] = attributes.delete(:firstname)
+    sso_attributes[:lastname] = attributes.delete(:lastname)
+    sso_attributes[:mail] = attributes.delete(:mail)
+    sso_attributes[:password] = attributes.delete(:password)
+
+    RestClient.put(self.host + "/accounts/#{login}",
+                   :login => login,
+                   :password => password,
+                   :user => sso_attributes) {|response|
+
+      case response.code
+      when 200
+        return true
+      else
+        return false
+      end
+    }
+  end
 end
