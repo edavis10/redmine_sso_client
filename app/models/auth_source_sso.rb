@@ -9,12 +9,12 @@ class AuthSourceSso < AuthSource
 
   def authenticate(login, password)
     return nil if login.blank? || password.blank?
-    return nil unless connect
+    return nil unless connect_to_sso_server
 
-    if user_present(login)
-      return user_login(login, password)
+    if user_present_on_sso_server(login)
+      return login_to_sso_server(login, password)
     else
-      return create_stub_user(login, password) if onthefly_register?
+      return create_user_on_sso_server(login, password) if onthefly_register?
     end
   end
 

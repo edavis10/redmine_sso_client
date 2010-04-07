@@ -1,5 +1,5 @@
 module SsoClient
-  def connect
+  def connect_to_sso_server
     begin
       RestClient.get(self.host)
     rescue => e
@@ -7,7 +7,7 @@ module SsoClient
     end
   end
 
-  def user_present(login)
+  def user_present_on_sso_server(login)
     RestClient.get(self.host + '/accounts/present', :login => login) {|response|
       case response.code
       when 200
@@ -19,7 +19,7 @@ module SsoClient
     }
   end
 
-  def user_login(login, password)
+  def login_to_sso_server(login, password)
     RestClient.post(self.host + '/login', :login => login, :password => password) {|response|
       case response.code
       when 200
@@ -33,7 +33,7 @@ module SsoClient
 
   end
 
-  def create_stub_user(login, password)
+  def create_user_on_sso_server(login, password)
     RestClient.post(self.host + '/accounts', :user => {:login => login, :password => password}) {|response|
 
       case response.code
