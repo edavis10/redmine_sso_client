@@ -40,10 +40,13 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
     end
 
     context "with an existing user" do
+      setup do
+        FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
+      end
+      
       context "with a successful authentication" do
         should "return the user account from the server" do
-          FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-          FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
           FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => valid_user_login)
 
           user = @auth_source.authenticate('user','password')
@@ -58,8 +61,6 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
 
       context "with a failed authentication" do
         should "return nil" do
-          FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-          FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
           FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => '', :status => ["401", "Unauthorized"])
 
           assert_equal nil, @auth_source.authenticate('user', 'badpassword')
