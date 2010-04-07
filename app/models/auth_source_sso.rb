@@ -39,7 +39,7 @@ class AuthSourceSso < AuthSource
   end
 
   def user_login(login, password)
-    RestClient.post(self.host + '/login', :login => login, :params => password) {|response|
+    RestClient.post(self.host + '/login', :login => login, :password => password) {|response|
       case response.code
       when 200
         raw_hash = Hash.from_xml(response)
