@@ -75,7 +75,7 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
       
       context "with a successful authentication" do
         should "return the user account from the server" do
-          FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => valid_user_login)
+          FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => valid_user_response)
 
           user = @auth_source.authenticate('user','password')
 
