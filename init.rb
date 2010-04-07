@@ -1,3 +1,5 @@
+config.gem 'rest-client', :lib => 'rest_client'
+
 require 'redmine'
 
 Redmine::Plugin.register :redmine_sso_client do
