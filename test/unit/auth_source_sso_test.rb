@@ -35,10 +35,38 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
     end
 
     context "with a new user" do
-      should "create a new user on the server"
-      should "return the user account from the server"
+      setup do
+        FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["204", "No Content"])
+      end
+
+      context "with on the fly register enabled" do
+        setup do
+          @auth_source.update_attribute(:onthefly_register, true)
+        end
+
+        should "return the user account from the server" do
+          FakeWeb.register_uri(:post, "http://sso.example.com/accounts", :body => new_user_response, :status => ["201", "Created"])
+          
+          user = @auth_source.authenticate('user','password')
+
+          assert user.is_a?(Hash), "User hash not returned"
+          assert_equal "user", user['login']
+          assert_equal "user", user['firstname']
+          assert_equal "user", user['lastname']
+          assert_equal "no-email-14@example.com", user['mail']
+        end
+      end
     end
 
+    context "with on the fly register disabled" do
+      should "return nil" do
+        @auth_source.update_attribute(:onthefly_register, false)
+        
+        assert_equal nil, @auth_source.authenticate('user','password')
+      end
+    end
+      
     context "with an existing user" do
       setup do
         FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])

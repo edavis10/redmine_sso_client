@@ -12,7 +12,7 @@ class AuthSourceSso < AuthSource
     if user_present(login)
       return user_login(login, password)
     else
-
+      return create_stub_user(login, password) if onthefly_register?
     end
   end
 
@@ -50,5 +50,18 @@ class AuthSourceSso < AuthSource
 
     }
 
+  end
+
+  def create_stub_user(login, password)
+    RestClient.post(self.host + '/accounts', :user => {:login => login, :password => password}) {|response|
+
+      case response.code
+      when 200, 201 # Created
+        raw_hash = Hash.from_xml(response)
+        return raw_hash['user']
+      else
+        return nil
+      end
+    }
   end
 end

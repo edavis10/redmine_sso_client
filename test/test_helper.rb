@@ -23,4 +23,15 @@ module FakeWebResponses
 </user>'
   end
 
+  def new_user_response
+    '<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <created-on type="datetime">2009-07-21T17:10:04-07:00</created-on>
+  <firstname>user</firstname>
+  <lastname>user</lastname>
+  <login>user</login>
+  <mail>no-email-14@example.com</mail>
+</user>'
+  end
+  
 end
