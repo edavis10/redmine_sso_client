@@ -17,7 +17,7 @@ Redmine::Plugin.register :redmine_sso_client do
 
   version '0.1.0'
 
-  requires_redmine :version_or_higher => '0.9.0'
+  requires_redmine :version => '0.9.2'
   
   menu :admin_menu, :auth_source_sso, { :controller => 'sso_auth_sources', :action => 'index'}, :caption => :label_auth_source_sso
 end

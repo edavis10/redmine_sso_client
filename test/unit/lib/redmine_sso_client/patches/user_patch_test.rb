@@ -34,8 +34,8 @@ class RedmineSsoClient::Patches::UserPatchTest < ActiveSupport::TestCase
 
       should "update the server's data before saving" do
         FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
-        FakeWeb.register_uri(:put, "http://sso.example.com/accounts/sso", :body => '', :status => ["200", "Success"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/sso/present.xml", :body => '', :status => ["200", "Success"])
+        FakeWeb.register_uri(:put, "http://sso.example.com/accounts/sso.xml", :body => '', :status => ["200", "Success"])
 
         @user.login = 'newsso'
 
@@ -45,8 +45,8 @@ class RedmineSsoClient::Patches::UserPatchTest < ActiveSupport::TestCase
       
       should "return false if the server failed to update" do
         FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
-        FakeWeb.register_uri(:put, "http://sso.example.com/accounts/sso", :body => '', :status => ["500", "Server Error"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/sso/present.xml", :body => '', :status => ["200", "Success"])
+        FakeWeb.register_uri(:put, "http://sso.example.com/accounts/sso.xml", :body => '', :status => ["500", "Server Error"])
 
         @user.login = 'newsso'
 

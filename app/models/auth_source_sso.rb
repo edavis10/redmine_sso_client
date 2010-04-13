@@ -12,9 +12,13 @@ class AuthSourceSso < AuthSource
     return nil unless connect_to_sso_server
 
     if user_present_on_sso_server(login)
-      return login_to_sso_server(login, password)
+      return format_user_hash_for_redmine_auth_source(login_to_sso_server(login, password))
     else
-      return create_user_on_sso_server(login, password) if onthefly_register?
+      logger.debug "AuthSourceSSO: User #{login} not found on SSO Server" if logger
+      if onthefly_register?
+        logger.debug "AuthSourceSSO: Attempting to create remote User #{login} on the fly" if logger
+        return format_user_hash_for_redmine_auth_source(create_user_on_sso_server(login, password))
+      end
     end
   end
 
@@ -30,5 +34,23 @@ class AuthSourceSso < AuthSource
     end
 
   end
-  
+
+  def test_connection
+    RestClient.get(self.host)
+  end
+
+  private
+
+  # Need to tidy up the data into the format that Redmine requires
+  def format_user_hash_for_redmine_auth_source(user_hash)
+    return [nil] unless user_hash
+    
+    [
+     user_hash.
+     except('created_at').
+     except('updated_at').
+     except('id').
+     merge('auth_source_id' => self.id)
+    ]
+  end
 end

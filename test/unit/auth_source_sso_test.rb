@@ -37,7 +37,7 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
     context "with a new user" do
       setup do
         FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["204", "No Content"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/user/present.xml", :body => '', :status => ["204", "No Content"])
       end
 
       context "with on the fly register enabled" do
@@ -46,10 +46,13 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
         end
 
         should "return the user account from the server" do
-          FakeWeb.register_uri(:post, "http://sso.example.com/accounts", :body => new_user_response, :status => ["201", "Created"])
-          
-          user = @auth_source.authenticate('user','password')
+          FakeWeb.register_uri(:post, "http://sso.example.com/accounts.xml", :body => new_user_response, :status => ["201", "Created"])
 
+          # Redmine 0.9.x returns an array of one hash, Redmine trunk
+          # returns a single hash
+          user_array = @auth_source.authenticate('user','password')
+
+          user = user_array.first
           assert user.is_a?(Hash), "User hash not returned"
           assert_equal "user", user['login']
           assert_equal "user", user['firstname']
@@ -71,15 +74,18 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
     context "with an existing user" do
       setup do
         FakeWeb.register_uri(:any, "http://sso.example.com/", :status => ["200", "Success"])
-        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/present", :body => '', :status => ["200", "Success"])
+        FakeWeb.register_uri(:get, "http://sso.example.com/accounts/user/present.xml", :body => '', :status => ["200", "Success"])
       end
       
       context "with a successful authentication" do
         should "return the user account from the server" do
-          FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => valid_user_response)
+          FakeWeb.register_uri(:post, "http://sso.example.com/login.xml", :body => valid_user_response)
 
-          user = @auth_source.authenticate('user','password')
+          # Redmine 0.9.x returns an array of one hash, Redmine trunk
+          # returns a single hash
+          user_array = @auth_source.authenticate('user','password')
 
+          user = user_array.first
           assert user.is_a?(Hash), "User hash not returned"
           assert_equal "user", user['login']
           assert_equal "John", user['firstname']
@@ -91,9 +97,9 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
 
       context "with a failed authentication" do
         should "return nil" do
-          FakeWeb.register_uri(:post, "http://sso.example.com/login", :body => '', :status => ["401", "Unauthorized"])
+          FakeWeb.register_uri(:post, "http://sso.example.com/login.xml", :body => '', :status => ["401", "Unauthorized"])
 
-          assert_equal nil, @auth_source.authenticate('user', 'badpassword')
+          assert_equal [nil], @auth_source.authenticate('user', 'badpassword')
         end
       end
     end
