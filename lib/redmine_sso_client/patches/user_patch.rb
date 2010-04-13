@@ -11,7 +11,8 @@ module RedmineSsoClient
 
       module InstanceMethods
         def update_sso_server
-          if auth_source && auth_source.is_a?(AuthSourceSso) && changed != ['auth_source_id']
+          if auth_source && auth_source.is_a?(AuthSourceSso) &&
+              (changed != ['auth_source_id'] && changed != ['last_login_on'])
             auth_source.update_external(self)
           end
         end
