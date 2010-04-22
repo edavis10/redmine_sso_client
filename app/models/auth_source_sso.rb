@@ -22,15 +22,19 @@ class AuthSourceSso < AuthSource
     end
   end
 
-  def update_external(user)
+  def update_external(user, non_attributes={})
     if user.changes.keys.include?('login')
       sso_account = user.changes['login'].first # use old value
     else
       sso_account = user.login
     end
+    
+    attributes = user.attributes.merge(non_attributes).symbolize_keys
 
     if connect_to_sso_server && user_present_on_sso_server(sso_account)
-      return update_account_on_sso_server(sso_account, user.hashed_password, user.attributes.symbolize_keys)
+      return update_account_on_sso_server(sso_account,
+                                          attributes[:previous_password] || user.hashed_password,
+                                          attributes)
     end
 
   end
@@ -39,11 +43,15 @@ class AuthSourceSso < AuthSource
     RestClient.get(self.host)
   end
 
+  def self.allow_password_changes?
+    true
+  end
+
   private
 
   # Need to tidy up the data into the format that Redmine requires
   def format_user_hash_for_redmine_auth_source(user_hash)
-    return [nil] unless user_hash
+    return nil unless user_hash
     
     [
      user_hash.

@@ -11,6 +11,10 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
     assert_equal AuthSource, AuthSourceSso.superclass
   end
 
+  should "allow password changes" do
+    assert AuthSourceSso.allow_password_changes?
+  end
+
   context "#authenticate" do
     setup do
       @auth_source = AuthSourceSso.new(:name => 'SSO Test', :host => 'http://sso.example.com')
@@ -99,7 +103,7 @@ class AuthSourceSsoTest < ActiveSupport::TestCase
         should "return nil" do
           FakeWeb.register_uri(:post, "http://sso.example.com/login.xml", :body => '', :status => ["401", "Unauthorized"])
 
-          assert_equal [nil], @auth_source.authenticate('user', 'badpassword')
+          assert_equal nil, @auth_source.authenticate('user', 'badpassword')
         end
       end
     end
