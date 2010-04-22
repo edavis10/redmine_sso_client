@@ -4,23 +4,23 @@ SSO Client implements a basic Single Sign On system for Redmine using the {Redmi
 
 == Features
 
-TODO
+* Integrates with the {Redmine SSO Server}[http://github.com/edavis10/redmine_sso_server] to provide a Single Sign On service for multiple Redmine instances
+* On the fly user registrations - new users can login and get an account automatically
+* Password resets
 
 == Getting the plugin
 
 A copy of the plugin can be downloaded from {Little Stream Software}[https://projects.littlestreamsoftware.com/projects/redmine-sso/files] or from {GitHub}[http://github.com/edavis10/redmine_sso_client]
 
-
 == Installation and Setup
 
+0. This plugin depends on private code that hasn't been added to Redmine yet.
 1. Follow the Redmine plugin installation steps at: http://www.redmine.org/wiki/redmine/Plugins 
-2. Run the plugin migrations +rake db:migrate_plugins+
-3. Restart your Redmine web servers (e.g. mongrel, thin, mod_rails)
-4. __TODO__
+2. Restart your Redmine web servers (e.g. mongrel, thin, mod_rails)
 
 == Usage
 
-__TODO__
+Once installed, the only setup needed is to add an Authentication Source for the server.  As an Administrator go to "Admin > SSO authentication" and Add a "New Authentication Mode".
 
 == License
 
