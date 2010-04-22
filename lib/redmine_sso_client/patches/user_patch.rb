@@ -13,10 +13,10 @@ module RedmineSsoClient
       end
 
       module InstanceMethods
-        define_method('check_password_with_caching_previous_password?') {|clear_password|
+        def check_password_with_caching_previous_password?(clear_password)
           @previous_password = clear_password if auth_source_id
-          send('check_password_without_caching_previous_password?'.to_sym, clear_password)
-        }
+          check_password_without_caching_previous_password?(clear_password)
+        end
 
         def update_sso_server
           if auth_source && auth_source.is_a?(AuthSourceSso) &&
