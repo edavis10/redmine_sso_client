@@ -15,8 +15,9 @@ A copy of the plugin can be downloaded from {Little Stream Software}[https://pro
 == Installation and Setup
 
 0. This plugin depends on private code that hasn't been added to Redmine yet.
-1. Follow the Redmine plugin installation steps at: http://www.redmine.org/wiki/redmine/Plugins 
-2. Restart your Redmine web servers (e.g. mongrel, thin, mod_rails)
+1. Install the rest-client gem using `gem install rest-client`
+2. Follow the Redmine plugin installation steps at: http://www.redmine.org/wiki/redmine/Plugins 
+3. Restart your Redmine web servers (e.g. mongrel, thin, mod_rails)
 
 == Usage
 
